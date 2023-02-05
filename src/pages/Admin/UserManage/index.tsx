@@ -3,7 +3,9 @@ import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import {Button, Image} from 'antd';
 import { useRef } from 'react';
-import {searchUsers} from "@/services/ant-design-pro/api";
+import {deleteUser, searchUsers, updateUser} from "@/services/ant-design-pro/api";
+import message from "antd/es/message";
+import {history} from "umi";
 
 const columns: ProColumns<API.CurrentUser>[] = [
   {
@@ -76,10 +78,6 @@ const columns: ProColumns<API.CurrentUser>[] = [
     }
   },
   {
-    title: '用户邮箱',
-    dataIndex: 'email',
-  },
-  {
     title: '用户角色',
     dataIndex: 'userRole',
     valueEnum: {
@@ -118,20 +116,44 @@ const columns: ProColumns<API.CurrentUser>[] = [
 
 export default () => {
   const actionRef = useRef<ActionType>();
+
+  /**
+   * 跳转到新增用户页面
+   */
+  const addUser = () => {
+    history.push('/admin/addUser');
+  }
+
   return (
-    <ProTable<CurrentUser>
+    <ProTable<API.CurrentUser>
       columns={columns}
       actionRef={actionRef}
       cardBordered
       request={async (params = {}, sort, filter) => {
         console.log(sort, filter);
-        const userList = await searchUsers();
+        const userList = await searchUsers(params as API.SearchParams);
         return {
           data: userList
         }
       }}
       editable={{
         type: 'multiple',
+        onDelete: async (key, row) => {
+          const res = await deleteUser(row.id);
+          if (res) {
+            message.success('删除成功');
+          } else {
+            message.error('出现错误');
+          }
+        },
+        onSave: async (key,record) => {
+          const res = await updateUser(record);
+          if (res) {
+            message.success('更新用户成功');
+          } else {
+            message.error('出现错误');
+          }
+        },
       }}
       columnsState={{
         persistenceKey: 'pro-table-singe-demos',
@@ -143,6 +165,7 @@ export default () => {
       rowKey="id"
       search={{
         labelWidth: 'auto',
+
       }}
       options={{
         setting: {
@@ -168,7 +191,7 @@ export default () => {
       dateFormatter="string"
       headerTitle="高级表格"
       toolBarRender={() => [
-        <Button key="button" icon={<PlusOutlined />} type="primary">
+        <Button key="button" icon={<PlusOutlined />} onClick={addUser} type="primary">
           新建
         </Button>
       ]}

@@ -2,8 +2,16 @@
 /* eslint-disable */
 import request from '@/plugins/globalRequest';
 
+// /** 新增用户 POST /api/user/add */
+// export async function addUser(body: API.RegisterParams, options?: { [key: string]: any }) {
+//   return request<API.BaseResponse<API.RegisterResult>>('/api/user/add', {
+//     method: 'POST',
+//     ...(options || {}),
+//   });
+// }
+
 /** 获取当前的用户 GET /api/user/current */
-export async function currentUser(options?: { [key: string]: any }) {
+export async function currentUser(token: string, options?: { [key: string]: any }) {
   return request<API.BaseResponse<API.CurrentUser>>('/api/user/current', {
     method: 'GET',
     ...(options || {}),
@@ -20,7 +28,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/user/login */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.BaseResponse<API.LoginResult>>('/api/user/login', {
+  return request<API.BaseResponse<string>>('/api/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -43,12 +51,39 @@ export async function register(body: API.RegisterParams, options?: { [key: strin
 }
 
 /** 搜索用户接口 GET /api/user/search */
-export async function searchUsers(options?: { [key: string]: any }) {
+export async function searchUsers(params:API.SearchParams, options?: { [key: string]: any }) {
   return request<API.BaseResponse<API.CurrentUser[]>>('/api/user/search', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
+    params: params,
+    ...(options || {}),
+  });
+}
+
+/** 删除用户接口 POST /api/user/delete */
+export async function deleteUser(body: API.DeleteParam, options?: { [key: string]: any }) {
+  return request<API.BaseResponse<API.BaseResponse<API.DeleteResult>>>('/api/user/delete', {
+    method: 'POST',
+    headers: {
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 修改用户接口 POST /api/user/update */
+export async function updateUser(body: API.CurrentUser, options?: { [key: string]: any }) {
+  return request<API.BaseResponse<API.BaseResponse<API.UpdateResult>>>('/api/user/update', {
+    method: 'PUT',
+    headers: {
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   });
 }

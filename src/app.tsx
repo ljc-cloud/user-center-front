@@ -35,7 +35,8 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      return await queryCurrentUser();
+      const token = localStorage.getItem("token");
+      return await queryCurrentUser(token);
     } catch (error) {
       history.push(loginPath);
     }

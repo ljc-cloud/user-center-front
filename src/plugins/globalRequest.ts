@@ -12,11 +12,14 @@ const request = extend({
 request.interceptors.request.use((url, options): any => {
   console.log(`do request url=${url}`);
 
+  const token = localStorage.getItem("token");
+
   return {
     url,
     options: {
       ...options,
       headers: {
+        'Authorization': token
       },
     },
   };

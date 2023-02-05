@@ -148,6 +148,22 @@ declare namespace API {
     type?: string;
   };
 
+  type DeleteParam = number;
+  type DeleteResult =  boolean;
+
+  type UpdateResult = number;
+
+  type SearchParams = {
+    username?: string;
+    userAccount?: string;
+    gender?: number;
+    phone?: string;
+    email?: string;
+    planetCode?: string;
+    userStatus?: number;
+    userRole?: number;
+  };
+
   type ErrorResponse = {
     /** 业务约定的错误码 */
     errorCode: string;

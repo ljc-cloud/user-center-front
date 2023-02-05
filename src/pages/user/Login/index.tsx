@@ -28,7 +28,7 @@ const LoginMessage: React.FC<{
   />
 );
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [userLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
   const fetchUserInfo = async () => {
@@ -43,21 +43,19 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const user = await login({
+      const token = await login({
         ...values,
         type,
       });
-      if (user) {
+      // alert(token);
+      if (token) {
+        localStorage.setItem("token", token);
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
         if (!history) return;
         const { query } = history.location;
-        // const { redirect } = query as {
-        //   redirect: string;
-        // };
-        // history.push(redirect || '/');
         history.push({
           pathname: '/welcome',
           query: query
